@@ -2,6 +2,16 @@
 var dotenv = require('dotenv');
 dotenv.load();
 
+// var fb = require('fbgraph');
+// fb.set('fb_app_id', process.env.Facebook_app_id);
+// fb.set('fb_app_secret', process.env.Facebook_app_secret);
+
+// var twitter = requre('twit');
+// twitter.get('twitter_app_key', process.env.Twitter_app_key);
+// twitter.get('twitter_app_secret', process.env.twitter_app_secret);
+
+// exports.fb = fb;
+// exports.twitter = twitter;
 
 /**
 * Add your authentication apis here with example like the bottom
