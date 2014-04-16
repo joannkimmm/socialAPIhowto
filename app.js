@@ -12,7 +12,8 @@ var conf = {
     client_id:      '433125933498263'
   , client_secret:  '51956c86a09a2a79c4b4b3363812551a'
   , scope:          'email, user_about_me, user_birthday, user_location, publish_stream, read_stream'
-  , redirect_uri:   'http://localhost:3000/auth/facebook'
+  //, redirect_uri:   'http://localhost:3000/auth/facebook'
+  , redirect_uri:   'http://assignment1-cogs121.herokuapp.com'
 };
 
 app.get('/auth/facebook', function(req, res) {
