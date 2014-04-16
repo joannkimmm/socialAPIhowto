@@ -11,42 +11,17 @@ var graph = require('fbgraph');
 var conf = {
     client_id:      '433125933498263'
   , client_secret:  '51956c86a09a2a79c4b4b3363812551a'
-  , scope:          'email, user_about_me, user_birthday, user_location, publish_stream'
+  , scope:          'email, user_about_me, user_birthday, user_location, publish_stream, read_stream'
   , redirect_uri:   'http://localhost:3000/auth/facebook'
 };
 
-// user_about_me, user_birthday, user_location, publish_stream'
-
-app.configure(function(){
-  app.set('views', __dirname + '/views');
-  app.set('view engine', 'jade');
-  app.use(express.bodyParser());
-  app.use(express.methodOverride());
-  app.use(app.router);
-  app.use(express.static(__dirname + '/public'));
-});
-
-app.configure('development', function(){
-	app.use(express.errorHandler({ dumpExceptions: true, showStack: true }));
-});
-
-app.configure('production', function(){
-  app.use(express.errorHandler());
-});
-
-app.get('/', function(req, res){
-  res.render("index", { title: "click link to connect" });
-});
-
 app.get('/auth/facebook', function(req, res) {
 	  if (!req.query.code) {
-    var authUrl = graph.getOauthUrl({
-        "client_id":     conf.client_id
-      , "redirect_uri":  conf.redirect_uri
-      , "scope":         conf.scope
-    });
-
-    // res.redirect(authUrl);
+    	var authUrl = graph.getOauthUrl({
+	        "client_id":     conf.client_id
+	      , "redirect_uri":  conf.redirect_uri
+	      , "scope":         conf.scope
+    	});
 
     if (!req.query.error) { //checks whether a user denied the app facebook login/permissions
       res.redirect(authUrl);
@@ -65,10 +40,28 @@ app.get('/auth/facebook', function(req, res) {
 	    res.redirect('/UserHasLoggedIn');
   });
 
+  var accessToken = graph.getAccessToken();
+  console.log(accessToken);
+
+	// graph
+	// // .setAccessToken(req.session.access_token)
+ //  .get("/me", function(err, data) {
+ //      console.log(data);
+ //  });
 });
 
 app.get('/UserHasLoggedIn', function(req, res) {
-  res.render("index", { title: "Logged In" });
+  res.render("index", { title: "Logged In!" });
+});
+
+
+var searchOptions = {
+    q:     "brogramming"
+  , type:  "post"
+};
+
+graph.search(searchOptions, function(err, res) {
+  console.log(res); // {data: [{id: xxx, from: ...}, {id: xxx, from: ...}]}
 });
 
 // var Twit = require('twit');

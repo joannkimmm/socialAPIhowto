@@ -20,7 +20,16 @@
 <body>
       <div class="container">
       	<!-- <h1>This is a boilerplate</h1> -->
+        <!-- <h1></h1> -->
+        {{#if title}}
+        <h2>{{title}}</h2>
+        {{/if}}
+        
         <a href="/auth/facebook">login with facebook</a>
+
+
+
+
     </div>
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="js/bootstrap.js"></script>
