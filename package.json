@@ -11,6 +11,7 @@
     "mongodb": "*",
     "mongoose": "*",
     "passport": "*",
+    "passport-facebook-canvas": "*",
     "passport-facebook": "*",
     "passport-twitter": "*",
     "dotenv": "*",
