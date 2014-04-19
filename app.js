@@ -26,8 +26,8 @@ var conf = {
     client_id:      FB_APP_ID
   , client_secret:  FB_APP_SECRET
   , scope:          'read_stream, email, user_about_me, user_birthday, user_location, publish_stream, user_likes, user_photos, user_relationships, user_status, user_work_history'
-  , redirect_uri:   'http://localhost:3000/auth/facebook/callback'
-  //, redirect_uri:   'http://assignment1-cogs121.herokuapp.com/auth/facebook'
+  //, redirect_uri:   'http://localhost:3000/auth/facebook/callback'
+  , redirect_uri:   'http://assignment1-cogs121.herokuapp.com/auth/facebook/callback'
 };
 
 //Configures the Template engine
@@ -57,7 +57,7 @@ passport.use(new TwitterStrategy({
     consumerKey: process.env.twitter_consumer_key,
     consumerSecret: process.env.twitter_consumer_secret,
     //callbackURL: "http://letsgetsocial.herokuapp.com/auth/twitter/callback"
-    callbackURL: "http://localhost:3000/twitterapp"
+    callbackURL: "http://assignment1-cogs121.herokuapp.com/twitterapp"
   },
   function(token, tokenSecret, profile, done) {
     User.findOrCreate({ twitterId: profile.id }, function (err, user) {
@@ -86,11 +86,11 @@ var user = {};
 passport.use(new FacebookStrategy({
     clientID: FB_APP_ID,
     clientSecret: FB_APP_SECRET,
-    callbackURL: "http://localhost:3000/auth/facebook/callback"
+    callbackURL: "http://assignment1-cogs121.herokuapp.com/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
-      console.log("derp herp derp " + accessToken);
+      //console.log("derp herp derp " + accessToken);
       FB_ACCESS_TOKEN = accessToken;
           user.token = accessToken;
     user.refreshToken = refreshToken;
@@ -127,11 +127,11 @@ var FacebookCanvasStrategy = require('passport-facebook-canvas');
 passport.use(new FacebookCanvasStrategy({
     clientID: FB_APP_ID,
     clientSecret: FB_APP_SECRET,
-    callbackURL: "http://localhost:3000/auth/facebook/callback"
+    callbackURL: "http://assignment1-cogs121.herokuapp.com/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
-      console.log("derp herp derp " + accessToken);
+      //console.log("derp herp derp " + accessToken);
       FB_ACCESS_TOKEN = accessToken;
           user.token = accessToken;
     user.refreshToken = refreshToken;
