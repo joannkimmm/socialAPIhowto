@@ -5782,4 +5782,19 @@ button.close {
     display: none !important;
   }
 }
+
+.city-background {
+    width: 100%;
+    height: 100%
+    float: left;
+    position: absolute;
+    /*-webkit-filter: grayscale(100%);*/
+    margin: 0 0 0 0;
+    background:url(http://i72.photobucket.com/albums/i162/carycheng77/grabinsta-photo3_zps7fd93a55.jpg);
+}
+
+.stretch{
+    width: 100%;
+    height: 100%;
+}
 /*# sourceMappingURL=bootstrap.css.map */

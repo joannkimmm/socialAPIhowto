@@ -6,11 +6,21 @@ var handlebars = require('express3-handlebars');
 var app = express();
 var dotenv = require('dotenv');
 dotenv.load();
+var passport = require('passport');
+var TwitterStrategy = require('passport-twitter').Strategy;
+var util = require('util');
+var twit = require('twit');
 
 var graph = require('fbgraph');
 var FB_ACCESS_TOKEN = "";
 var FB_APP_ID = process.env.Facebook_app_id;
 var FB_APP_SECRET = process.env.Facebook_app_secret;
+
+
+//route files to load
+var index = require('./routes/index');
+var fb = require('./routes/facebook');
+var twitterapp = require('./routes/twitterapp');
 
 var conf = {
     client_id:      FB_APP_ID
@@ -20,9 +30,20 @@ var conf = {
   //, redirect_uri:   'http://assignment1-cogs121.herokuapp.com/auth/facebook'
 };
 
-var passport = require('passport')
+//Configures the Template engine
+app.engine('handlebars', handlebars());
+app.set('view engine', 'handlebars');
+app.set('views', __dirname + '/views');
+app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.logger());
+app.use(express.cookieParser());
+app.use(express.bodyParser());
+app.use(express.methodOverride());
+app.use(express.session({ secret: 'keyboard cat' }));
 app.use(passport.initialize());
 app.use(passport.session());
+app.use(app.router);
+
 passport.serializeUser(function(user, done) {
   done(null, user);
 });
@@ -31,56 +52,32 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
+//Twitter Authentication
+passport.use(new TwitterStrategy({
+    consumerKey: process.env.twitter_consumer_key,
+    consumerSecret: process.env.twitter_consumer_secret,
+    //callbackURL: "http://letsgetsocial.herokuapp.com/auth/twitter/callback"
+    callbackURL: "http://localhost:3000/twitterapp"
+  },
+  function(token, tokenSecret, profile, done) {
+    User.findOrCreate({ twitterId: profile.id }, function (err, user) {
+      return done(err, user);
+    });
+  }
+));
 
-// app.use(app.router);
+//twitter routes
+app.get('/auth/twitter', passport.authenticate('twitter'));
+app.get('/auth/twitter/callback', 
+  passport.authenticate('twitter', { successRedirect: '/',
+                                     failureRedirect: '/' }));
 
-// app.get('/auth/facebook', function(req, res) {
-// 	  if (!req.query.code) {
-//     	var authUrl = graph.getOauthUrl({
-// 	        "client_id":     conf.client_id
-// 	      , "redirect_uri":  conf.redirect_uri
-// 	      , "scope":         conf.scope
-//     	});
+app.get('/statuses', twitterapp.printStatuses);
 
-//     if (!req.query.error) { //checks whether a user denied the app facebook login/permissions
-//       res.redirect(authUrl);
-//     } else {  //req.query.error == 'access_denied'
-//       res.send('access denied');
-//     }
-//     return;
-//   }
+app.get('/twitterapp', function(req, res){
+  res.render('twitterapp', { user: "hello" });
+});
 
-// 	graph.authorize({
-// 	        "client_id":      conf.client_id
-// 	      , "redirect_uri":   conf.redirect_uri
-// 	      , "client_secret":  conf.client_secret
-// 	      , "code":           req.query.code
-// 	    }, function (err, facebookRes) {
-// 	    res.redirect('/UserHasLoggedIn');
-//   });
-
-//   var accessToken = graph.getAccessToken();
-//   console.log(accessToken);
-
-	// graph
- //  .get("/me", function(err, data) {
- //      console.log(data);
- //  });
-// });
-
-// app.get('/UserHasLoggedIn', function(req, res) {
-//   res.render("index", { title: "Logged In!" });
-// });
-
-
-// var searchOptions = {
-//     q:     "brogramming"
-//   , type:  "post"
-// };
-
-// graph.search(searchOptions, function(err, res) {
-//   console.log(res); // {data: [{id: xxx, from: ...}, {id: xxx, from: ...}]}
-// });
 
 //Facebook Authentication
 var FacebookStrategy = require('passport-facebook').Strategy;
@@ -125,25 +122,6 @@ app.get('/auth/facebook/callback',
   });
 });
 
-// app.get('/auth/facebook', passport.authenticate('facebook'));
-// app.get('/auth/facebook/callback', 
-//    // passport.authenticate('facebook-canvas', { successRedirect: '/',
-//    //                                           failureRedirect: '/error' }),
-//   passport.authenticate('facebook', { scope: ['email, user_about_me, user_birthday, user_location, publish_stream, read_stream, user_likes, user_photos, user_relationships, user_status, user_work_history'] }, 
-//     { failureRedirect: '/' }),
-//   function(req,res){
-//     graph.setAccessToken(FB_ACCESS_TOKEN);
-//     graph.authorize({
-//         "client_id":      conf.client_id
-//       , "redirect_uri":   conf.redirect_uri
-//       , "client_secret":  conf.client_secret
-//       , "code":           req.query.code
-//     }, function (err, facebookRes) {
-//               exports.graph = graph;
-//       res.redirect('/UserHasLoggedIn');
-//   });
-// });
-
 //Facebook Canvas authentication
 var FacebookCanvasStrategy = require('passport-facebook-canvas');
 passport.use(new FacebookCanvasStrategy({
@@ -158,7 +136,6 @@ passport.use(new FacebookCanvasStrategy({
           user.token = accessToken;
     user.refreshToken = refreshToken;
     user.profile = profile;
-
     graph.setAccessToken(user.token);
       return done(null, user);
     });
@@ -199,55 +176,18 @@ app.get('/auth/facebook/canvas/autologin', function( req, res ){
             '</html>' );
 });
 
+
+// app.get('/UserHasLoggedIn')
 app.get('/UserHasLoggedIn', function(req, res) {
-    graph
-  .get("/me", function(err, data) {
-      console.log(data);
-  });
-  res.render("index", { title: "Logged In!" });
+
+//res.render("index", {name: fb.printName});
+
+  res.render("facebookapp", { title: "Hello!" });
+  // res.render("index", { attr: graph.get("/me", function(err, data) {})});
 });
 
 
-//FACEBOOK CANVAS
-// app.post('/auth/facebook/canvas', 
-//   passport.authenticate('facebook-canvas', { scope: ['email, user_about_me, user_birthday, user_location, publish_stream, read_stream, user_likes, user_photos, user_relationships, user_status, user_work_history'] }, 
-//     { failureRedirect: '/auth/facebook/canvas/autologin' }),
-//   function(req, res) {
-//     graph.setAccessToken(FB_ACCESS_TOKEN);
-//     // code is set
-//     // we'll send that and get the access token
-//     graph.authorize({
-//         "client_id":      conf.client_id
-//       , "redirect_uri":   conf.redirect_uri
-//       , "client_secret":  conf.client_secret
-//       , "code":           req.query.code
-//     }, function (err, facebookRes) {
-//         exports.graph = graph;
-//         res.redirect('/UserHasLoggedIn');
-//     });
-//   });
 
-
-  // graph
-  // .get("/me", function(err, data) {
-  //     console.log(data);
-  // });
-
-//routes
-// app.get('/auth/facebook',
-//   passport.authenticate('facebook', { scope: 'read_stream, email, user_about_me, user_birthday, user_location, publish_stream, user_likes, user_photos, user_relationships, user_status, user_work_history' })
-// );
-
-// var Twit = require('twit');
-// var T = new Twit({
-//     consumer_key:         ''
-//     , consumer_secret:      ''
-//     , access_token:         ''
-//     , access_token_secret:  ''
-// });
-
-//route files to load
-var index = require('./routes/index');
 
 //database setup - uncomment to set up your database
 //var mongoose = require('mongoose');
@@ -262,7 +202,8 @@ app.use(express.bodyParser());
 
 //routes
 app.get('/', index.view);
-// app.get('/', index.);
+app.get('/twitterapp', twitterapp.view);
+
 //set environment ports and start application
 app.set('port', process.env.PORT || 3000);
 http.createServer(app).listen(app.get('port'), function(){

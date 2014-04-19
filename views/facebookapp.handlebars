@@ -2,10 +2,10 @@
 
 <html>
 <head>
-  <title>LETSGETSOCIAL</title>  
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  
+	<title>FacebookLogin</title>	
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -16,21 +16,15 @@
       <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
       <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
 </head>
-
-<body>
+<body class="city-background">
       <div class="container">
-        <h1>LETS GET SOCIAL!</h1>
+      	{{#if title}}
+        <h2>LOGGED IN!</h2>
+        {{/if}}
     </div>
-
-<a href="/auth/facebook"><img src="fblogo.jpeg" width="270" height="270"></a>
-<a href="/auth/twitter"><img src="twitterlogo.jpeg" width="300" height="300"></a>
 
 
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="js/bootstrap.js"></script>
 </body>
 </html>
-
-
-
-

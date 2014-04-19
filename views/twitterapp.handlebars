@@ -2,7 +2,7 @@
 
 <html>
 <head>
-  <title>LETSGETSOCIAL</title>  
+  <title>TwitterLogin</title>  
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
@@ -16,21 +16,35 @@
       <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
       <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
 </head>
-
-<body>
+<body class="city-background">
       <div class="container">
-        <h1>LETS GET SOCIAL!</h1>
+        <h1>immaSOCIALite</h1>
     </div>
 
-<a href="/auth/facebook"><img src="fblogo.jpeg" width="270" height="270"></a>
-<a href="/auth/twitter"><img src="twitterlogo.jpeg" width="300" height="300"></a>
+        <div>
+            {{user}}
+        </div>
+
+        <p>ID: {{user.id}}</p>
+        <p>Username: immaSOCIAL</p>
+
+      <form id="display" role="form" method="get" action="/statuses">
+    <button type="submit" class="btn btn-info">Display</button>
+      </form>
+
+      <div class="container">
+        <div class="row">
+            {{#each statuses}}
+                  <p>User Tweets: {{text}}</p>
+            {{/each}}
+          </div>
+      </div>
+
+
+
 
 
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="js/bootstrap.js"></script>
 </body>
 </html>
-
-
-
-
