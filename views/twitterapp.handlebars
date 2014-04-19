@@ -18,18 +18,18 @@
 </head>
 <body class="city-background">
       <div class="container">
-        <h1>immaSOCIALite</h1>
+            <div class="row-fluid">
+      <h3> Hello, {{userProfile.displayName}}! </h3>
     </div>
+        <!-- <h3>Hello, {{userProfile.username}}</h3> -->
+     </div>
 
-        <div>
-            {{user}}
-        </div>
 
-        <p>ID: {{user.id}}</p>
-        <p>Username: immaSOCIAL</p>
+        <!-- <p>ID: {{user.id}}</p> -->
+        <!-- <p>Username: {{user.id}}</p> -->
 
       <form id="display" role="form" method="get" action="/statuses">
-    <button type="submit" class="btn btn-info">Display</button>
+    <button type="submit" class="btn btn-info">Display Your Tweets!</button>
       </form>
 
       <div class="container">

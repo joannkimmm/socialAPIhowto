@@ -2,20 +2,27 @@ var twit = require('twit');
 var followers;
 var array;
 var id;
+var app = require('../app');
 
-var T = new twit({
-    consumer_key:        process.env.twitter_consumer_key 
-  , consumer_secret:     process.env.twitter_consumer_secret
-  , access_token:        process.env.token
-  , access_token_secret: process.env.tokenSecret
-});
+// var T = new twit({
+//     consumer_key:        process.env.twitter_consumer_key 
+//   , consumer_secret:     process.env.twitter_consumer_secret
+//   , access_token:        process.env.token
+//   , access_token_secret: process.env.tokenSecret
+// });
 
 exports.view = function(req, res) {
   res.render('twitterapp');
 }
 
+exports.profile = function(req, res) {
+  var profilepic = req.user.profile.photos.value;
+  res.render('twitterapp', { userProfile: req.user.profile,
+                profilepic: profilepic });
+}
+
 exports.printStatuses = function(req, res) {
-T.get('statuses/user_timeline', { screen_name: 'immaSOCIAL' },  function (err, reply) {
+app.T.get('statuses/user_timeline',  function (err, reply) {
 var jsonArray = [];
 function increment(i) { 
   if (i < 8) {
@@ -38,3 +45,5 @@ increment(0);
 res.render('twitterapp', data);
 });
 }
+
+// exports.T = T;

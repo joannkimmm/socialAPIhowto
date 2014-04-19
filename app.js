@@ -26,9 +26,18 @@ var conf = {
     client_id:      FB_APP_ID
   , client_secret:  FB_APP_SECRET
   , scope:          'read_stream, email, user_about_me, user_birthday, user_location, publish_stream, user_likes, user_photos, user_relationships, user_status, user_work_history'
-  //, redirect_uri:   'http://localhost:3000/auth/facebook/callback'
-  , redirect_uri:   'http://assignment1-cogs121.herokuapp.com/auth/facebook/callback'
+  , redirect_uri:   'http://localhost:3000/auth/facebook/callback'
+  // , redirect_uri:   'http://assignment1-cogs121.herokuapp.com/auth/facebook/callback'
 };
+
+var T = new twit({
+    consumer_key:        process.env.twitter_consumer_key 
+  , consumer_secret:     process.env.twitter_consumer_secret
+  , access_token:        process.env.token
+  , access_token_secret: process.env.tokenSecret
+});
+
+exports.T = T;
 
 //Configures the Template engine
 app.engine('handlebars', handlebars());
@@ -52,15 +61,20 @@ passport.deserializeUser(function(user, done) {
   done(null, user);
 });
 
+// //twitter routes
+// app.get('/twitterapp', twitterapp.view);
+// app.get('/twitterLoggedIn', twitterapp.profile);
+
 //Twitter Authentication
 passport.use(new TwitterStrategy({
     consumerKey: process.env.twitter_consumer_key,
     consumerSecret: process.env.twitter_consumer_secret,
     //callbackURL: "http://letsgetsocial.herokuapp.com/auth/twitter/callback"
-    callbackURL: "http://assignment1-cogs121.herokuapp.com/twitterapp"
-    //callbackURL: "http://localhost:3000/twitterapp"
+    //callbackURL: "http://assignment1-cogs121.herokuapp.com/twitterapp"
+    callbackURL: "http://localhost:3000/twitterapp"
   },
   function(token, tokenSecret, profile, done) {
+    console.log(profile.id);
     User.findOrCreate({ twitterId: profile.id }, function (err, user) {
       return done(err, user);
     });
@@ -70,14 +84,22 @@ passport.use(new TwitterStrategy({
 //twitter routes
 app.get('/auth/twitter', passport.authenticate('twitter'));
 app.get('/auth/twitter/callback', 
-  passport.authenticate('twitter', { successRedirect: '/',
-                                     failureRedirect: '/' }));
+  passport.authenticate('twitter', { successRedirect: '/twitterLoggedIn',
+                                     failureRedirect: '/' }),
+   function (err, twitterRes) {
+                exports.T=T;
+        res.redirect('/twitterLoggedIn')});
 
+//twitter routes
+app.get('/twitterapp', twitterapp.view);
+app.get('/twitterLoggedIn', twitterapp.profile);
 app.get('/statuses', twitterapp.printStatuses);
 
-app.get('/twitterapp', function(req, res){
-  res.render('twitterapp', { user: "hello" });
-});
+// app.get('/twitterapp', function(req, res){
+//   res.render('twitterapp', { user: "Hello," });
+// });s
+
+
 
 
 //Facebook Authentication
@@ -87,8 +109,8 @@ var user = {};
 passport.use(new FacebookStrategy({
     clientID: FB_APP_ID,
     clientSecret: FB_APP_SECRET,
-    //callbackURL: "http://localhost:3000/auth/facebook/callback"
-    callbackURL: "http://assignment1-cogs121.herokuapp.com/auth/facebook/callback"
+    callbackURL: "http://localhost:3000/auth/facebook/callback"
+    // callbackURL: "http://assignment1-cogs121.herokuapp.com/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
@@ -143,8 +165,8 @@ var FacebookCanvasStrategy = require('passport-facebook-canvas');
 passport.use(new FacebookCanvasStrategy({
     clientID: FB_APP_ID,
     clientSecret: FB_APP_SECRET,
-    //callbackURL: "http://localhost:3000/auth/facebook/callback"
-    callbackURL: "http://assignment1-cogs121.herokuapp.com/auth/facebook/callback"
+    callbackURL: "http://localhost:3000/auth/facebook/callback"
+    // callbackURL: "http://assignment1-cogs121.herokuapp.com/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
@@ -196,16 +218,11 @@ app.get('/auth/facebook/canvas/autologin', function( req, res ){
 
 // app.get('/UserHasLoggedIn')
 app.get('/UserHasLoggedIn', function(req, res) {
-
-//res.render("index", {name: fb.printName});
-
   res.render("facebookapp", { title: "Hello!" });
-  // res.render("index", { attr: graph.get("/me", function(err, data) {})});
 });
 
 
 exports.graph = graph;
-
 //database setup - uncomment to set up your database
 //var mongoose = require('mongoose');
 //mongoose.connect(process.env.MONGOHQ_URL || 'mongodb://localhost/DATABASE1);

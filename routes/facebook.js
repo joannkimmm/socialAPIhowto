@@ -9,9 +9,9 @@ exports.view = function (req, res) {
 exports.profile = function (req, res) {
 	var query = '/';
 		query += req.user.profile.username;
-	// 	query += '/picture';
+	 	query += '/picture';
 
-	// var queryMe = '/me';
+	var queryMe = '/me';
 
 	app.graph.get(query, function(err, json) {
 		res.render('facebookapp', {
