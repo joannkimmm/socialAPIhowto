@@ -19,7 +19,7 @@ var FB_APP_SECRET = process.env.Facebook_app_secret;
 
 //route files to load
 var index = require('./routes/index');
-var fb = require('./routes/facebook');
+var facebook = require('./routes/facebook');
 var twitterapp = require('./routes/twitterapp');
 
 var conf = {
@@ -58,6 +58,7 @@ passport.use(new TwitterStrategy({
     consumerSecret: process.env.twitter_consumer_secret,
     //callbackURL: "http://letsgetsocial.herokuapp.com/auth/twitter/callback"
     callbackURL: "http://assignment1-cogs121.herokuapp.com/twitterapp"
+    //callbackURL: "http://localhost:3000/twitterapp"
   },
   function(token, tokenSecret, profile, done) {
     User.findOrCreate({ twitterId: profile.id }, function (err, user) {
@@ -86,6 +87,7 @@ var user = {};
 passport.use(new FacebookStrategy({
     clientID: FB_APP_ID,
     clientSecret: FB_APP_SECRET,
+    //callbackURL: "http://localhost:3000/auth/facebook/callback"
     callbackURL: "http://assignment1-cogs121.herokuapp.com/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
@@ -100,6 +102,20 @@ passport.use(new FacebookStrategy({
       return done(null, user);
     });
   }));
+//routes
+app.get('/', index.view);
+app.post('/', function(req, res) {
+  res.json('YES');
+});
+
+//fb routes
+app.get('/facebook', facebook.view);
+app.get('/UserHasLoggedIn', facebook.profile);
+// app.get('/facebook/randPic', facebook.getPic)
+// app.get('/facebook/testAPI', facebook.graphAPI);
+// app.get('/facebook/json', function(req, res) {
+//   res.json(req.user);
+// });
 
 //facebook login
 app.get('/auth/facebook', passport.authenticate('facebook', { scope: ['email, user_about_me, user_birthday, user_location',
@@ -127,6 +143,7 @@ var FacebookCanvasStrategy = require('passport-facebook-canvas');
 passport.use(new FacebookCanvasStrategy({
     clientID: FB_APP_ID,
     clientSecret: FB_APP_SECRET,
+    //callbackURL: "http://localhost:3000/auth/facebook/callback"
     callbackURL: "http://assignment1-cogs121.herokuapp.com/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
@@ -147,7 +164,7 @@ app.get('/auth/facebook', passport.authenticate('facebook-canvas', { scope: ['em
                                                                               'user_relationships, user_status, user_work_history']}));
 
 app.get('/auth/facebook/callback', 
-  passport.authenticate('facebook-canvas', { successRedirect: '/',
+  passport.authenticate('facebook-canvas', { successRedirect: '/UserHasLoggedIn',
                                              failureRedirect: '/error' }),
     function(req,res){
       graph.setAccessToken(FB_ACCESS_TOKEN);
@@ -187,7 +204,7 @@ app.get('/UserHasLoggedIn', function(req, res) {
 });
 
 
-
+exports.graph = graph;
 
 //database setup - uncomment to set up your database
 //var mongoose = require('mongoose');

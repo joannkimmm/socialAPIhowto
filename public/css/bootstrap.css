@@ -5790,7 +5790,7 @@ button.close {
     position: absolute;
     /*-webkit-filter: grayscale(100%);*/
     margin: 0 0 0 0;
-    background:url(http://i72.photobucket.com/albums/i162/carycheng77/grabinsta-photo3_zps7fd93a55.jpg);
+    background:url(http://i72.photobucket.com/albums/i162/carycheng77/grabinsta-photo3_zps7fd93a55.jpg) !important;
 }
 
 .stretch{

@@ -2,10 +2,10 @@
 
 <html>
 <head>
-	<title>FacebookLogin</title>	
-	<meta charset="utf-8">
-	<meta name="viewport" content="width=device-width, initial-scale=1.0">
-	
+  <title>TwitterLogin</title>  
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
 
     <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -18,12 +18,11 @@
 </head>
 <body class="city-background">
       <div class="container">
-      	{{#if title}}
-        <h2>LOGGED IN!</h2>
-        {{/if}}
+
+    <div class="row-fluid">
+      <h3> Hello, {{userProfile.displayName}}! <!-- You are currently signed in as {{userProfile.username}} on {{userProfile.provider}}! --> </h3>
     </div>
-
-
+</div>
     <script src="https://code.jquery.com/jquery.js"></script>
     <script src="js/bootstrap.js"></script>
 </body>
