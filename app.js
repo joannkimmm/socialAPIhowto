@@ -26,8 +26,8 @@ var conf = {
     client_id:      FB_APP_ID
   , client_secret:  FB_APP_SECRET
   , scope:          'read_stream, email, user_about_me, user_birthday, user_location, publish_stream, user_likes, user_photos, user_relationships, user_status, user_work_history'
-  , redirect_uri:   'http://localhost:3000/auth/facebook/callback'
-  // , redirect_uri:   'http://assignment1-cogs121.herokuapp.com/auth/facebook/callback'
+  // , redirect_uri:   'http://localhost:3000/auth/facebook/callback'
+  , redirect_uri:   'http://assignment1-cogs121.herokuapp.com/auth/facebook/callback'
 };
 
 var T = new twit({
@@ -70,12 +70,18 @@ passport.use(new TwitterStrategy({
     consumerKey: process.env.twitter_consumer_key,
     consumerSecret: process.env.twitter_consumer_secret,
     //callbackURL: "http://letsgetsocial.herokuapp.com/auth/twitter/callback"
-    //callbackURL: "http://assignment1-cogs121.herokuapp.com/twitterapp"
-    callbackURL: "http://localhost:3000/twitterapp"
+    callbackURL: "http://assignment1-cogs121.herokuapp.com/twitterapp"
+    // callbackURL: "http://localhost:3000/twitterapp"
   },
   function(token, tokenSecret, profile, done) {
-    console.log(profile.id);
+    user.token = token;
+    user.tokenSecret = tokenSecret;
+    user.profile = profile;
+                    T.get('https://api.twitter.com/1.1/account/verify_credentials.json', function(err, res){
+  console.log("THIS IS MY INFO");
+})
     User.findOrCreate({ twitterId: profile.id }, function (err, user) {
+
       return done(err, user);
     });
   }
@@ -109,8 +115,8 @@ var user = {};
 passport.use(new FacebookStrategy({
     clientID: FB_APP_ID,
     clientSecret: FB_APP_SECRET,
-    callbackURL: "http://localhost:3000/auth/facebook/callback"
-    // callbackURL: "http://assignment1-cogs121.herokuapp.com/auth/facebook/callback"
+    // callbackURL: "http://localhost:3000/auth/facebook/callback"
+    callbackURL: "http://assignment1-cogs121.herokuapp.com/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {
@@ -165,8 +171,8 @@ var FacebookCanvasStrategy = require('passport-facebook-canvas');
 passport.use(new FacebookCanvasStrategy({
     clientID: FB_APP_ID,
     clientSecret: FB_APP_SECRET,
-    callbackURL: "http://localhost:3000/auth/facebook/callback"
-    // callbackURL: "http://assignment1-cogs121.herokuapp.com/auth/facebook/callback"
+    // callbackURL: "http://localhost:3000/auth/facebook/callback"
+    callbackURL: "http://assignment1-cogs121.herokuapp.com/auth/facebook/callback"
   },
   function(accessToken, refreshToken, profile, done) {
     process.nextTick(function () {

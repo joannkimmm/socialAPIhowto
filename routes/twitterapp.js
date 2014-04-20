@@ -17,9 +17,12 @@ exports.view = function(req, res) {
 
 exports.profile = function(req, res) {
   var profilepic = req.user.profile.photos.value;
-  res.render('twitterapp', { userProfile: req.user.profile,
+  // app.T.get(query, function(err, json) {
+  res.render('twitterapp', { userProfile: req.user.profile, 
                 profilepic: profilepic });
+  // });
 }
+
 
 exports.printStatuses = function(req, res) {
 app.T.get('statuses/user_timeline',  function (err, reply) {

@@ -5783,6 +5783,14 @@ button.close {
   }
 }
 
+.offwhite{
+  background-color: #FDF5E6;
+}
+
+.center{
+  text-align: center;
+}
+
 .city-background {
     width: 100%;
     height: 100%
